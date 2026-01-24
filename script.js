@@ -1,18 +1,6 @@
-function isHexDigit(value) {
-    return /^[0-9a-fA-F]$/.test(value);
-}
-
-function isBinDigit(value) {
-    return /^[0-1]$/.test(value);
-}
-
 const dec_input = document.getElementById("decimal");
 const bin_input = document.getElementById("binary");
 const hex_input = document.getElementById("hex");
-
-// let previous_valid_dec = null;
-// let previous_valid_bin = null;
-// let previous_valid_hex = null;
 
 const TYPE = Object.freeze({
     DEC: 0,
@@ -22,25 +10,25 @@ const TYPE = Object.freeze({
 
 let curr_type = 0;
 
-const all_types = [
+const all_numeric_values = [
     { input: dec_input, prev_valid: null, base: 10 },
     { input: bin_input, prev_valid: null, base: 2 },
     { input: hex_input, prev_valid: null, base: 16 },
 ];
 
 function zero_out_values() {
-    for(const item of all_types) {
-        item.input.value = "";
-        item.prev_valid = "";
+    for(const numeric_value of all_numeric_values) {
+        numeric_value.input.value = "";
+        numeric_value.prev_valid = "";
     }
 }
 
 function calculate() {
-    const changed_item = all_types[curr_type];
+    const changed_item = all_numeric_values[curr_type];
     const new_value = Number.parseInt(changed_item.input.value, changed_item.base);
 
-    for(let i = 0; i < all_types.length; i++) {
-        const item = all_types[i];
+    for(let i = 0; i < all_numeric_values.length; i++) {
+        const item = all_numeric_values[i];
         if(i == curr_type) {
             changed_item.prev_valid = changed_item.input.value;
         } else {
@@ -53,91 +41,61 @@ function calculate() {
 
 dec_input.addEventListener("input", (e) => {
     curr_type = TYPE.DEC;
-    const dec = all_types[curr_type];
+    const dec = all_numeric_values[curr_type];
+    const is_valid_value = !isNaN(dec.input.value);
+    const is_valid_digit = !isNaN(e.data);
 
-    if(isNaN(e.data)) {
-        dec.input.value = dec.prev_valid ?? "";
-    } else {
-        calculate();
-    }
-
-    if(dec.input.value.trim().length == 0) {
-        zero_out_values();
-    }
-
+    genericHandler(e, dec, is_valid_value, is_valid_digit);
 });
 
 bin_input.addEventListener("input", (e) => {
     curr_type = TYPE.BIN;
-    const bin = all_types[curr_type];
+    const bin = all_numeric_values[curr_type];
+    const is_valid_value = /^[01]+$/.test(bin.input.value);
+    const is_valid_digit = e.data === "0" || e.data === "1";
 
-    if(e.inputType == "insertFromPaste") {
-        let valid_paste = false;
-        for (let i = 0, len = bin.input.value.length; i < len; i++) {
-            if(isBinDigit(bin.input.value[i])) {
-                valid_paste = true;
-            } else {
-                valid_paste = false;
-                break;
-            }
-        }
-
-        if(valid_paste) { 
-            calculate(); 
-            return;
-        }
-    }
-
-    if(isNaN(e.data) || e.data < 0 || e.data > 1) {
-        bin.input.value = bin.prev_valid ?? "";
-    } else {
-        calculate();
-    }
-
-    if(bin.input.value.trim().length == 0) {
-        zero_out_values();
-    }
+    genericHandler(e, bin, is_valid_value, is_valid_digit);
 });
 
 hex_input.addEventListener("input", (e) => {
     curr_type = TYPE.HEX;
-    const hex = all_types[curr_type];
+    const hex = all_numeric_values[curr_type];
+    const is_valid_value = /^[0-9a-fA-F]+$/.test(hex.input.value);
+    const is_valid_digit = /^[0-9a-fA-F]$/.test(e.data);
+
+    genericHandler(e, hex, is_valid_value, is_valid_digit);
+});
+
+function genericHandler(e, numeric_value, is_valid_value, is_valid_digit) {
+    let valid = false;
 
     if(e.inputType.startsWith("delete")) {
-        if(hex.input.value) {
-            calculate();
-            return;
-        }
-        zero_out_values();
-        return;
-    }
-
-    if(e.inputType == "insertFromPaste") {
-        let is_valid = true;
-
-        for (let i = 0, len = hex.input.value.length; i < len; i++) {
-            if(!isHexDigit(hex.input.value[i])) {
-                is_valid = false;
-                break;
-            }
-        }
-
-        if(is_valid) {
+        if(numeric_value.input.value) {
             calculate();
         } else {
-            hex.input.value = hex.prev_valid;
+            zero_out_values();
         }
+
         return;
     }
 
-    if(isHexDigit(e.data)) {
-        calculate();
+    if(e.inputType === "insertFromPaste") {
+        valid = is_valid_value;
     } else {
-        hex.input.value = hex.prev_valid ?? "";
+        valid = is_valid_digit;
     }
 
-    if(hex.input.value.trim().length == 0) {
-        zero_out_values();
+    if(!valid) {
+        numeric_value.input.value = numeric_value.prev_valid ?? "";
     }
-});
+
+    if(!numeric_value.input.value.trim()) {
+        zero_out_values();
+        return;
+    }
+
+    if(valid) {
+        calculate();
+    }
+}
 
