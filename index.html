@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Simple Number Converter</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="" />
+    <link rel="icon" href="favicon.png"> 
+</head>
+
+<body>
+    <h1>Simple number converter</h1>
+
+    <div class="inputs_container">
+        <div class="single_input dec_grp">
+            <label for="decimal">dec</label>
+            <input  id="decimal" name="decimal" />
+        </div>
+
+        <div class="single_input bin_grp">
+            <label for="binary">bin</label>
+            <input  id="binary" name="binary"/>
+        </div>
+
+        <div class="single_input hex_grp">
+            <label for="hex">hex</label>
+            <input  id="hex" name="hex"/>
+        </div>
+    </div>
+</body>
+<script src="script.js"></script>
+<style>
+    * {
+        font-family: 'Courier New', monospace;
+        font-size: 28pt;
+        font-weight: normal;
+        background: lightgrey;
+    }
+    .inputs_container {
+        margin: 0 auto;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+    }
+    .single_input {
+    }
+    input {
+        text-align: right;
+        height: 28pt;
+        border: none;
+        border: 1px solid darkgrey;
+        outline: none;
+        color: inherit;
+    }
+    
+    .dec_grp {
+    }
+    .bin_grp{
+    }
+    .hex_grp {
+    }
+
+</style>
+
+</html>
