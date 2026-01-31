@@ -16,7 +16,7 @@ const all_numeric_values = [
     { input: hex_input, prev_valid: null, base: 16 },
 ];
 
-function zero_out_values() {
+function zeroOutValues() {
     for(const numeric_value of all_numeric_values) {
         numeric_value.input.value = "";
         numeric_value.prev_valid = "";
@@ -73,7 +73,7 @@ function genericHandler(e, numeric_value, is_valid_value, is_valid_digit) {
         if(numeric_value.input.value) {
             calculate();
         } else {
-            zero_out_values();
+            zeroOutValues();
         }
 
         return;
@@ -90,7 +90,7 @@ function genericHandler(e, numeric_value, is_valid_value, is_valid_digit) {
     }
 
     if(!numeric_value.input.value.trim()) {
-        zero_out_values();
+        zeroOutValues();
         return;
     }
 
